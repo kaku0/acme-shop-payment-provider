@@ -28,15 +28,15 @@ test('preauth', async () => {
         TableName: tableName,
         Key: { paymentToken }
     }).promise();
-    console.log(ddbResponse);
+
     expect(ddbResponse.Item).not.toBe(undefined);
     expect(ddbResponse.Item.paymentToken).toBe(paymentToken);
     expect(ddbResponse.Item.amount).toBe(30000);
 
-    dynamodb.delete({
+    await dynamodb.delete({
         TableName: tableName,
         Key: { paymentToken }
-    })
+    }).promise();
 });
 
 test('preauth without cardNumber', async () => {
