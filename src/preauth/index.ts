@@ -50,16 +50,20 @@ export const handler = async (event: any = {}) : Promise <any> => {
     if (!event.body)
         return response("Missing body in event.", 400);
     const body = JSON.parse(event.body);
+
+    // Validate body
     if (!body.cardNumber)
-        return response("Missing 'cardNumber' in event body.", 400);
+        return response("Missing 'cardNumber' in request body.", 400);
     if (typeof body.cardNumber !== "string")
         return response("'cardNumber' is not a string.", 400);
     if (body.cardNumber.length !== 16)
         return response("'cardNumber' is not 16 characters long.", 400);
     if (!body.amount)
-        return response("Missing 'amount' in event body.", 400);
+        return response("Missing 'amount' in request body.", 400);
     if (typeof body.amount !== "number")
         return response("'amount' is not a number.", 400);
+    if (body.amount < 0)
+        return response("'amount' should be a positive number.", 400)
 
     // Generate the token
     var paymentToken = await exports.genToken(client, body.cardNumber, body.amount);
