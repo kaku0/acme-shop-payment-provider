@@ -1,0 +1,119 @@
+# Backstage catalog for this repository. Shared entries (groups, systems) are identical in every ACME Shop repo.
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: payment-provider-sandbox
+  title: Payment Provider Sandbox
+  description: Stand-in for the external payment service provider (PSP) in non-production accounts. Deployed to dev and staging
+    only, never to production.
+  tags:
+  - typescript
+  - aws-cdk
+  - aws-lambda
+  annotations:
+    github.com/project-slug: kaku0/acme-shop-payment-provider
+    stackrails.io/hosts: psp-sandbox.api.acme-shop.example
+  links:
+  - url: https://github.com/kaku0/acme-shop-payment-provider
+    title: Source
+spec:
+  type: service
+  lifecycle: experimental
+  owner: group:partner-integrations-team
+  system: payments
+  providesApis:
+  - payment-provider-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: payment-provider-api
+  description: 'Payment service provider API: preauthorise, process, cancel, update amount, check.'
+spec:
+  type: openapi
+  lifecycle: production
+  owner: group:partner-integrations-team
+  system: payments
+  definition:
+    $text: ./resources/openapi.yaml
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: payments
+  description: Taking money from customers, safely.
+spec:
+  owner: group:payments-team
+  domain: finance
+  type: business
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: acme-group
+  description: 'ACME Retail Group: online and in-store retail.'
+spec:
+  type: root
+  profile:
+    displayName: ACME Retail Group
+    email: acme-group@acme-shop.example
+  children:
+  - digital-commerce
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: digital-commerce
+  description: Everything behind the ACME online shop.
+spec:
+  type: business-unit
+  profile:
+    displayName: Digital Commerce
+    email: digital-commerce@acme-shop.example
+  parent: acme-group
+  children:
+  - customer-experience
+  - order-fulfilment
+  - finance-technology
+  - platform-engineering
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: finance-technology
+  description: Payments and payment-provider integrations.
+spec:
+  type: department
+  profile:
+    displayName: Finance Technology
+    email: finance-technology@acme-shop.example
+  parent: digital-commerce
+  children:
+  - payments-team
+  - partner-integrations-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: payments-team
+  description: 'Customer payments: authorise, capture, refund.'
+spec:
+  type: team
+  profile:
+    displayName: Payments Team
+    email: payments-team@acme-shop.example
+  parent: finance-technology
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: partner-integrations-team
+  description: Integrations with external providers (PSP, carriers).
+spec:
+  type: team
+  profile:
+    displayName: Partner Integrations Team
+    email: partner-integrations-team@acme-shop.example
+  parent: finance-technology
+  children: []

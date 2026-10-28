@@ -24,7 +24,7 @@ export class Payment3PStack extends cdk.Stack {
       tracingEnabled: true
     });
     new ssm.StringParameter(this, "ApiUrlParameter", {
-      parameterName: "/ecommerce/"+env.valueAsString+"/payment-3p/api/url",
+      parameterName: `/ecommerce/${env.valueAsString}/payment-3p/api/url`,
       simpleName: false,
       stringValue: "https://"+api.ref+".execute-api."+cdk.Stack.of(this).region+".amazonaws.com/"+API_STAGE_NAME
     });
@@ -36,7 +36,7 @@ export class Payment3PStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
     new ssm.StringParameter(this, "TableNameParameter", {
-      parameterName: "/ecommerce/"+env.valueAsString+"/payment-3p/table/name",
+      parameterName: `/ecommerce/${env.valueAsString}/payment-3p/table/name`,
       simpleName: false,
       stringValue: table.tableName
     });
